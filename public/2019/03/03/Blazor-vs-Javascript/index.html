@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang=pt>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Blazor é um framework da Microsoft para o desenvolvimento de aplicativos SPA. Mas como fazer o navegador entender o código .NET? Utilizando o WebAssembly, uma tecnologia experimental, que já é suporta">
+<meta name="keywords" content="Blazor,.Net Core 3.0,Web Assembly,C#,SPA">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR">
+<meta property="og:url" content="https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/index.html">
+<meta property="og:site_name" content="Gilberto Ferreira">
+<meta property="og:description" content="Blazor é um framework da Microsoft para o desenvolvimento de aplicativos SPA. Mas como fazer o navegador entender o código .NET? Utilizando o WebAssembly, uma tecnologia experimental, que já é suporta">
+<meta property="og:locale" content="pt-br">
+<meta property="og:image" content="https://gilberto-ferreira.github.io/images/20190302/dotnetrun.png">
+<meta property="og:image" content="https://gilberto-ferreira.github.io/images/20190302/tela.png">
+<meta property="og:image" content="https://gilberto-ferreira.github.io/images/20190302/codigo.png">
+<meta property="og:updated_time" content="2019-03-03T06:44:42.812Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=".NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR">
+<meta name="twitter:description" content="Blazor é um framework da Microsoft para o desenvolvimento de aplicativos SPA. Mas como fazer o navegador entender o código .NET? Utilizando o WebAssembly, uma tecnologia experimental, que já é suporta">
+<meta name="twitter:image" content="https://gilberto-ferreira.github.io/images/20190302/dotnetrun.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon_2.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Início</a></li>
+         
+          <li><a href="/archives/">Artigos</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Seguinte</span>
+      <span id="i-top" class="info" style="display:none;">Acima</span>
+      <span id="i-share" class="info" style="display:none;">Compartihar Post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&text=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&is_video=false&description=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR&body=Check out this article: https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&name=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais"><span class="toc-number">1.</span> <span class="toc-text">Parciais</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais-com-Dataset-Mediano"><span class="toc-number">2.</span> <span class="toc-text">Parciais com Dataset Mediano</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais-com-Dataset-Grande"><span class="toc-number">3.</span> <span class="toc-text">Parciais com Dataset Grande</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Referencias"><span class="toc-number">4.</span> <span class="toc-text">Referências</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        .NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Gilberto Ferreira</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-03-03T06:41:42.019Z" itemprop="datePublished">2019-03-03</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Programacao/">Programação</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Net-Core-3-0/">.Net Core 3.0</a>, <a class="tag-link" href="/tags/Blazor/">Blazor</a>, <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/SPA/">SPA</a>, <a class="tag-link" href="/tags/Web-Assembly/">Web Assembly</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><a href="https://blazor.net/" target="_blank" rel="noopener">Blazor</a> é um framework da Microsoft para o desenvolvimento de aplicativos <a href="https://imasters.com.br/desenvolvimento/single-page-applications-e-outras-maravilhas-da-web-moderna" target="_blank" rel="noopener">SPA</a>. Mas como fazer o navegador entender o código .NET?</p>
+<p>Utilizando o <a href="https://webassembly.org/" target="_blank" rel="noopener">WebAssembly</a>, uma tecnologia experimental, que já é suportada pelos principais navegadores. Sua estrutura foi otmizada para downlods e velocidade de execução. É um formato de bytecode que só pode fazer o que o Javascript faz.</p>
+<p>Não será nosso foco entrar em questões elementares do web assembly. No final do artigo deixarei referências para consulta.</p>
+<p>Quem já está acostumado com <a href="https://docs.microsoft.com/pt-br/aspnet/core/razor-pages/?view=aspnetcore-2.2&amp;tabs=visual-studio" target="_blank" rel="noopener">Razor</a> não vai sentir sequer dificuldade, pois o Blazor me parece ser uma evolução do Razor.</p>
+<p>Neste artigo vamos montar um exmplo que faz uma chamada http GET via javascript puro e via blazor e vamos comparar usando as ferramentas de depuração do navegador Google Chrome. Os fontes estudados neste post podem ser consultados neste link.</p>
+<p>Antes de iniciar você precisará instalar a versão 3.0 (preview) do .NET Core. Acesse este <a href="https://docs.microsoft.com/pt-br/aspnet/core/client-side/spa/blazor/get-started?view=aspnetcore-3.0&amp;tabs=netcore-cli&amp;viewFallbackFrom=aspnetcore-2.1" target="_blank" rel="noopener">link</a> para ver o passo a passo para criar o projeto. Caso possua alguma dificuldade para levantar o projeto blazor, veja esta <a href="https://github.com/dotnet/sdk/issues/2948" target="_blank" rel="noopener">referência</a>.</p>
+<p>Abra o seu terminal e insira o código abaixo:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dotnet new blazor -o BlazorTestRest</span><br><span class="line">cd BlazorTestRest</span><br><span class="line">dotnet run</span><br></pre></td></tr></table></figure></p>
+<p>Você deverá ver algo do tipo em seu terminal:</p>
+<img src="/images/20190302/dotnetrun.png">
+<p>Abra o seu navegador e vá até o link <a href="http://localhost:5000/fetchdata" target="_blank" rel="noopener">fetchdata</a>. Você deverá estar na tela abaixo.</p>
+<img src="/images/20190302/tela.png">
+<p>O template padrão de um projeto Blazor já faz uma requisição XHR. Nós faremos apenas uma adaptação. Iremos carregar os dados listados na tela ao acionar um botão. Limpe o html e a função existente para o carregamento da página e adicione o código abaixo dentro do bloco <i>funcions</i> do arquivo. A ideia é isolar o cenário.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> <span class="keyword">void</span> <span class="title">LoadForecast</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"Evento de click engatilhado"</span>);</span><br><span class="line">    forecasts = <span class="keyword">await</span> Http.GetJsonAsync&lt;WeatherForecast[]&gt;(<span class="string">"sample-data/weather.json"</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">"Evento de click finalizado"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Agora adicione o botão de acordo com o código HTML abaixo:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">"@LoadForecast"</span>&gt;</span>Load Forecasts<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>Se tudo estiver certo, seu código deverá estar assim:</p>
+<img src="/images/20190302/codigo.png">
+<p>Assim como eu, quem já está habituado a trabalhar com web assembly, a dificuldade foi zero! Clique no botão e acompanhe o resultado pelas ferramentas de network e console do Chrome. Force um erro de conexão e clique no botão - veja a descrição dos erros que são inscritos no console.</p>
+<p>Vamos implementar a mesma chamada usando javascript puro e comparar os resultados. Crie um site, html puro mesmo, e adicione o código abaixo:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"appTeste"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">"getForecasts()"</span>&gt;</span>Load Forecasts<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">	getForecasts = function() &#123;</span></span><br><span class="line"><span class="undefined">		console.log('Iniciado');</span></span><br><span class="line"><span class="undefined">		fetch("http://localhost/TesteGet/weather.json")</span></span><br><span class="line"><span class="undefined">			.then(function(result) &#123; </span></span><br><span class="line"><span class="undefined">				result.text()</span></span><br><span class="line"><span class="undefined">					.then(function(x) &#123; </span></span><br><span class="line"><span class="undefined">                        var forecasts = JSON.parse(x);</span></span><br><span class="line"><span class="undefined">                        console.log('Terminado'); </span></span><br><span class="line"><span class="undefined">                    &#125;);</span></span><br><span class="line"><span class="undefined">			&#125;);</span></span><br><span class="line"><span class="undefined">	&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Esse código é muito simples e faz basicamente o que o outro está fazendo. Queremos apenas testar o desempenho de cada um.</p>
+<h2 id="Parciais"><a href="#Parciais" class="headerlink" title="Parciais"></a>Parciais</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Blazor</th>
+<th>Javascript</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Velocidade</td>
+<td>10.65ms</td>
+<td>6.3ms</td>
+</tr>
+<tr>
+<td>Peso do Arquivo</td>
+<td>512B</td>
+<td>828B</td>
+</tr>
+</tbody>
+</table>
+<p>Estes critérios são totalmente objetivos, então é preciso atentar para o que custa pra mais pra você, peso ou velocidade. Devo ressaltar que foi utilizado a média aritimética para 20 requisições para cada opção.</p>
+<p>Vamos agora considerar um dataset maior e ver qual tecnologia tem o melhor desempenho. Copiei o conteúdo <a href="https://blockchain.info/unconfirmed-transactions?format=json" target="_blank" rel="noopener">deste</a> dataset para dentro do dataset weather. É um dataset que contem informações de tamanho mediano e bastante comum também de ser utilizado.</p>
+<h2 id="Parciais-com-Dataset-Mediano"><a href="#Parciais-com-Dataset-Mediano" class="headerlink" title="Parciais com Dataset Mediano"></a>Parciais com Dataset Mediano</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Blazor</th>
+<th>Javascript</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Velocidade</td>
+<td>9.3ms</td>
+<td>7.85ms</td>
+</tr>
+<tr>
+<td>Peso do Arquivo</td>
+<td>6.5KB</td>
+<td>19.8KB</td>
+</tr>
+</tbody>
+</table>
+<p>Curiosamente as requisições com Blazor obtiveram um desempenho com um arquivo com peso mediano do que com um arquivo muito pequeno. De igual forma, javascript puro ainda obteve um melhor desempenho em velocidade e Blazor no peso.</p>
+<h2 id="Parciais-com-Dataset-Grande"><a href="#Parciais-com-Dataset-Grande" class="headerlink" title="Parciais com Dataset Grande"></a>Parciais com Dataset Grande</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Blazor</th>
+<th>Javascript</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Velocidade</td>
+<td>317.8ms</td>
+<td>217.45ms</td>
+</tr>
+<tr>
+<td>Peso do Arquivo</td>
+<td>2.4MB</td>
+<td>9.3MB</td>
+</tr>
+</tbody>
+</table>
+<p>Considerando um <a href="http://www.vizgr.org/historical-events/search.php?format=json&amp;begin_date=-3000000&amp;end_date=20151231&amp;lang=en" target="_blank" rel="noopener">dataset</a> grande, continuamos com o mesmo comportamento. Blazor lida melhor com o tamanho dos arquivos, mas demora mais pra responder com um arquivo menor. É importante dizer que com este arquivo maior, senti um incômodo no navegador, como se ele estivesse “agarrado”, ao realizar as requisções pelo blazor. Na medida que eu clico sequencialmente, as requisições são mais pesadas, enquanto quando eu espero a página liberar, elas são mais leves.</p>
+<p>Quis focar no desempenho do blazor neste arquivo porque tenho observado a comunidade bastante entusiasmada. Particularmente tenho aprendido a ter muito receio ao escolher uma tecnologia. Algumas bibliotecas, mesmo da própria Microsoft, podem ser muito mal empregadas por falta de conhecimento - o caso Entity Framework e OData, da Microsoft mesmo.</p>
+<p>Esta foi uma introdução ao Blazor. No próximo artigo vamos nos aprofundar no framework criando uma SPA com as funções básicas: como um CRUD, roteamento, como é simples registrar um web component, dentre outras funcionalidades. Vou me esforçar para colocar tudo em um artigo. </p>
+<p>Até a próxima!</p>
+<h2 id="Referencias"><a href="#Referencias" class="headerlink" title="Referências"></a>Referências</h2><ul>
+<li><a href="https://webassembly.org/" target="_blank" rel="noopener">Web Assembly</a></li>
+<li><a href="https://docs.microsoft.com/pt-br/aspnet/core/razor-pages/?view=aspnetcore-2.2&amp;tabs=visual-studio" target="_blank" rel="noopener">Razor</a></li>
+<li><a href="http://learn-blazor.com" target="_blank" rel="noopener">Blazor</a></li>
+<li><a href="https://imasters.com.br/desenvolvimento/single-page-applications-e-outras-maravilhas-da-web-moderna" target="_blank" rel="noopener">Single Page Applications e outras maravilhas da web moderna</a></li>
+<li><a href="https://docs.microsoft.com/pt-br/aspnet/core/client-side/spa/blazor/get-started?view=aspnetcore-3.0&amp;tabs=netcore-cli&amp;viewFallbackFrom=aspnetcore-2.1" target="_blank" rel="noopener">Introução ao Blazor</a></li>
+<li><a href="https://github.com/dotnet/sdk/issues/2948" target="_blank" rel="noopener">Erro Unable to generate deps.json</a></li>
+</ul>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Por favor, ative o JavaScript para visualizar o conteúdo.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Início</a></li>
+         
+          <li><a href="/archives/">Artigos</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais"><span class="toc-number">1.</span> <span class="toc-text">Parciais</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais-com-Dataset-Mediano"><span class="toc-number">2.</span> <span class="toc-text">Parciais com Dataset Mediano</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parciais-com-Dataset-Grande"><span class="toc-number">3.</span> <span class="toc-text">Parciais com Dataset Grande</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Referencias"><span class="toc-number">4.</span> <span class="toc-text">Referências</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&text=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&is_video=false&description=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR&body=Check out this article: https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&title=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://gilberto-ferreira.github.io/2019/03/03/Blazor-vs-Javascript/&name=.NET Core 3.0 &gt;&gt; Blazor vs Javascript, Desempenho nas Requisições XHR&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartilhar</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 Gilberto Ferreira
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Início</a></li>
+         
+          <li><a href="/archives/">Artigos</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+    <!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'gilberto-ferreira';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>
