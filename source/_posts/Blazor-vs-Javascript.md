@@ -31,11 +31,11 @@ dotnet run
 
 Você deverá ver algo do tipo em seu terminal:
 
-{% img /images/dotnetrun.PNG %}
+{% img /images/20190303/dotnetrun.PNG %}
 
 Abra o seu navegador e vá até o link [fetchdata](http://localhost:5000/fetchdata). Você deverá estar na tela abaixo.
 
-{% img /images/tela.PNG %}
+{% img /images/20190303/tela.PNG %}
 
 O template padrão de um projeto Blazor já faz uma requisição XHR. Nós faremos apenas uma adaptação. Iremos carregar os dados listados na tela ao acionar um botão. Limpe o html e a função existente para o carregamento da página e adicione o código abaixo dentro do bloco <i>funcions</i> do arquivo. A ideia é isolar o cenário.
 
@@ -55,7 +55,7 @@ Agora adicione o botão de acordo com o código HTML abaixo:
 
 Se tudo estiver certo, seu código deverá estar assim:
 
-{% img /images/codigo.PNG %}
+{% img /images/20190303/codigo.PNG %}
 
 Assim como eu, quem já está habituado a trabalhar com web assembly, a dificuldade foi zero! Clique no botão e acompanhe o resultado pelas ferramentas de network e console do Chrome. Force um erro de conexão e clique no botão - veja a descrição dos erros que são inscritos no console.
 
