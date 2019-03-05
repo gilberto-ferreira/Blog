@@ -57,7 +57,7 @@ Se tudo estiver certo, seu código deverá estar assim:
 
 {% img /images/20190303/codigo.jpg %}
 
-Assim como eu, quem já está habituado a trabalhar com web assembly, a dificuldade foi zero! Clique no botão e acompanhe o resultado pelas ferramentas de network e console do Chrome. Force um erro de conexão e clique no botão - veja a descrição dos erros que são inscritos no console.
+Assim como eu, quem já está habituado a trabalhar com Razor, a dificuldade foi zero! Clique no botão e acompanhe o resultado pelas ferramentas de network e console do Chrome. Force um erro de conexão e clique no botão - veja a descrição dos erros que são inscritos no console.
 
 Vamos implementar a mesma chamada usando javascript puro e comparar os resultados. Crie um site, html puro mesmo, e adicione o código abaixo:
 
