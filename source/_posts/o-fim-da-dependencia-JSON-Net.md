@@ -28,13 +28,13 @@ Vamos testar alguns cenários para comprovar. A idéia é confrontar o tempo de 
 
 ## Utf8JsonWriter
 
-Vocês precisaram baixar o [Visual Studio 2019 Preview](https://visualstudio.microsoft.com/pt-br/vs/preview/) para conseguirem acompanhar, por causa da compatibilidade da versão da linguagem e do framework, C# 8 e .Net Core 3.0 preview 2.
+Vocês precisarão baixar o [Visual Studio 2019 Preview](https://visualstudio.microsoft.com/pt-br/vs/preview/) para conseguirem acompanhar, por causa da compatibilidade da versão da linguagem e do framework, C# 8 e .Net Core 3.0 preview 2.
 
 {% img /images/20190305/vs2019Preview.png %}
 
 Abra o terminal e digite: 
 {% codeblock lang:Batch %}
-dotnet new blazor -o EstudoCSharp8Json
+dotnet new console -o EstudoCSharp8Json
 cd EstudoCSharp8Json
 dotnet run
 {% endcodeblock %}
